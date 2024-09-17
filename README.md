@@ -1,7 +1,7 @@
 # Embedded pipeline
 Make sure you have the PlatformIO extension installed in VSCode.
 
-The main code is [main.cpp](src/main.cpp). This is where the RTOS with motor controller PIDs and RPi 5 commuincation threads live.
+The main code is [main.cpp](src/main.cpp). This is where the RTOS with motor controller PIDs and RPi 5 communication threads live.
 
 Libraries can be included in the [lib](lib) folder or using the PlatformIO Library Manager. [Readme](lib/README) for more info.
 
