@@ -3,7 +3,7 @@ This directory is intended for project hardware information.
 
 [The schematic](Ender3_schematic.PDF) is only for finding Port/Pin values [PAx]. Cross-reference the pinout below to define Digital Pin values [Dx].
 
-                  ATMEL ATMEGA1284 Pinout 
+                  <!-- ATMEL ATMEGA1284 Pinout 
 
                         +---\/---+
             (D 0) PB0  1|        |40  PA0 (AI 0 / D31)
@@ -26,5 +26,5 @@ This directory is intended for project hardware information.
        PWM (D 12) PD4 18|        |23  PC1 (D 17) SDA
        PWM (D 13) PD5 19|        |22  PC0 (D 16) SCL
        PWM (D 14) PD6 20|        |21  PD7 (D 15) PWM
-                        +--------+
+                        +--------+ -->
 
