@@ -1,7 +1,7 @@
 
 This directory is intended for project hardware information.
 
-(Ender3_schematic.PDF) is for finding Port/Pin values only [PAx]. Cross-reference the pinout below to define Digital Pin value [Dx].
+[The schematic](Ender3_schematic.PDF) is only for finding Port/Pin values [PAx]. Cross-reference the pinout below to define Digital Pin values [Dx].
 
                   ATMEL ATMEGA1284 Pinout 
 
