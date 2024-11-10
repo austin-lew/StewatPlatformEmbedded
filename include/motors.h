@@ -29,6 +29,11 @@
 
 #define NUM_MOTORS (3)
 
+/* Motor Inversion */
+#define DIR_INVERT true
+#define STEP_INVERT false
+#define EN_INVERT false
+
 /* Variable declarations */
 extern AccelStepper* Motors[NUM_MOTORS];
 

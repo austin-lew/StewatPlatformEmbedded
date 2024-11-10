@@ -2,6 +2,9 @@
 #define serial_h
 
 #include <motors.h>
+#include <pinout.h>
+
+#define LED_PIN PIN_A4
 
 /* A class for devices that communicates to the motor driver over serial. Tokenizes and parses commands and their associated values */
 class InputMessenger {

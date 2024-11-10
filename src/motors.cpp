@@ -23,6 +23,8 @@ void setupMotors(float maxSpeedRad, float maxAccelRad){
         Motors[i]->setMinPulseWidth(MIN_PULSE_MICROSEC);
         /* Tare all three motors */
         Motors[i]->setCurrentPosition(0);
+        /* Invert all motor directions */
+        Motors[i]->setPinsInverted(DIR_INVERT, STEP_INVERT, EN_INVERT);
     }
     /* Enable X, Y, and E motors */
     enableXYE();

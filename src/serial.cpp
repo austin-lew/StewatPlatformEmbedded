@@ -18,8 +18,12 @@ bool InputMessenger::getUpdates(){
     if (!Serial.available()){
         return false;
     }
+    /* LED on when serial is available */
+    digitalWrite(LED_PIN,HIGH);
     /* Get everything from the serial buffer as a string */
     _rx = Serial.readString();
+    /* LED off when contents cleared */
+    digitalWrite(LED_PIN,LOW);
     /* Remove whitespace and make lowercase */
     _rx.replace(" ", "");
     _rx.toLowerCase();

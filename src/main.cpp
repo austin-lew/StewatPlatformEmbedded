@@ -24,6 +24,7 @@ void setup() {
     Serial.setTimeout(2);
     /* Setup motors */
     setupMotors(MAX_SPEED_RAD, MAX_ACCEL_RAD);
+    pinMode(LED_PIN, OUTPUT);
 }
 
 void loop() {
