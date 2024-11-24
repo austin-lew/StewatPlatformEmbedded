@@ -32,21 +32,29 @@ Once configured, upload to the board by connecting the USB
 ## Serial Communication Guide
 The *Serial Hardware Interfacing Tether* (S.H.I.T.) is a state-of-the-art serial communication protocol for transmitting instructions and data between the RPi and motor
  controller. Commands sent from the RPi to the motor controller must be in the following format:
-    
+
+    <instruction>
+or
+
     <instruction, rad1, rad2, rad3>
 Where *instruction* is an instruction character and *rad1*, *rad2*, and *rad3* are the motor angles in radian associated with the instruction. 
 ### Instructions
-There are three instructions that can be sent to the motor controller: TARE, RELATIVE_MOVE, and ABSOLUTE MOVE.
-| Instruction | Character | Description |
-| ----------- | --------- | ----------- |
-| TARE        | `t`       | Sets the current positions of all motors to the desired value |
-| RELATIVE_MOVE | `r`     | Rotates the motors by the desired radians, relative to the current position. |
-| ABSOLUTE_MOVE | `a`     | Rotates the motors to the desired position in radians, relative to their zero position. |
-#### TARE
+There are three instructions that can be sent to the motor controller: HOME, RELATIVE_MOVE, and ABSOLUTE MOVE.
+| Instruction | Character | Command | Description |
+| ----------- | --------- |---------| ----------- |
+| HOME        | `h`       |`<h>`| Cuts power to motors to let them drop to hardstop |
+| RELATIVE_MOVE | `r`     |`<r,rad1,rad2,rad3>`|Rotates the motors by the desired radians, relative to the current position. |
+| ABSOLUTE_MOVE | `a`     |`<a,rad1,rad2,rad3>`| Rotates the motors to the desired position in radians, relative to their zero position. |
+#### HOME
 - Instruction character: `t`. 
-- The motors will immediately stop, and set their current positions equal to the values of *rad1*, *rad2*, and *rad3*. 
+- Does not require any motor angles.
+- The motors will:
+    1. Cut power and drop to the hard stops.
+    2. Wait 1 second.
+    3. Set its current positions to $-\frac{\pi}{3}$ rad. 
+    4. Enable absolute move commands
+    5. Transmit `TARE` on the serial port.
 - Positive is clockwise.
-- For example, the command `<t, 0.12, 1.1, 3.14>` will set the current position of motor 1 to 0.12 rad, motor2 to 1.1 rad, and motor 3 to 3.14 rad. 
 - Once successfully tared, the motor controller will transmit back `TARE` to confirm with the RPi.
 #### RELATIVE_MOVE
 - Instruction character: `r`
@@ -64,9 +72,9 @@ There are three instructions that can be sent to the motor controller: TARE, REL
 
 ### Operation
 #### 1. Home Platform
-Since the steppers are currently operated with an open loop control, a homing sequence is required upon startup. Use `RELATIVE_MOVE` commands to position the platform to its home.
-#### 2. Tare Motors
-Use `TARE` to set the motor angles of the home position. Based on the most recent math, all three motors should be tared to 0.05 rad at home position. Confirm that the motor controller has returned `TARE` over serial.
+Since the steppers are currently operated with an open loop control, a homing sequence is required upon startup. Use `HOME` commands to move the platform to its home position and calibrate its motor positions.
+#### 2. Verify Homed
+Once successfully homed, the motor controller will transmit string `HOME` to serial. Ensure that this is received before proceeding.
 #### 3. Run Motors
 From this point onwards, `ABSOLUTE_MOVE` commands should be used to control the position of the motors indefinitely. 
 

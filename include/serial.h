@@ -12,7 +12,7 @@ class InputMessenger {
         /* Constructor */
         InputMessenger();
         /* Enumeration of commands */
-        typedef enum { TARE=0, RELATIVE_MOVE=1, ABSOLUTE_MOVE=2 }CommandType;
+        typedef enum { HOME=0, RELATIVE_MOVE=1, ABSOLUTE_MOVE=2 }CommandType;
         /* Returns the command char from the latest valid data read from serial */
         CommandType getCommand();
         /* Returns the motor angle, in rad, from the latest valid data read from serial */

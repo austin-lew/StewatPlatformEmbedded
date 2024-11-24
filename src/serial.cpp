@@ -5,7 +5,7 @@
 #define DELIMITER ','
 #define DATA_END '>'
 
-#define TARE_STR "t"
+#define HOME_STR "h"
 #define RELATIVE_MOVE_STR "r"
 #define ABSOLTUE_MOVE_STR "a"
 
@@ -34,6 +34,19 @@ bool InputMessenger::getUpdates(){
         return false;
     }
     String vecStr = _rx.substring(dataStartIdx+1, dataEndIdx);
+    /* Extract the command character */
+    String commandChar = vecStr.substring(0, 1);
+    /* Store the command character */
+    if (commandChar == HOME_STR){
+        _command = HOME;
+        return true;
+    }
+    else if (commandChar == ABSOLTUE_MOVE_STR)
+        _command = ABSOLUTE_MOVE;
+    else if (commandChar == RELATIVE_MOVE_STR)
+        _command = RELATIVE_MOVE;
+    else
+        return false;
     /* Find the delimiters */
     int delim1 = vecStr.indexOf(DELIMITER);
     int delim2 = vecStr.indexOf(DELIMITER, delim1+1);
@@ -41,17 +54,6 @@ bool InputMessenger::getUpdates(){
     if (delim1<0 || delim2<0 || delim3<0){
         return false;
     }
-    /* Extract the command character */
-    String commandChar = vecStr.substring(0, delim1);
-    /* Store the command character */
-    if (commandChar == TARE_STR)
-        _command = TARE;
-    else if (commandChar == ABSOLTUE_MOVE_STR)
-        _command = ABSOLUTE_MOVE;
-    else if (commandChar == RELATIVE_MOVE_STR)
-        _command = RELATIVE_MOVE;
-    else
-        return false;
     /* Extract and store the three floats */
     _motorAnglesRad[0] = vecStr.substring(delim1+1, delim2).toFloat();
     _motorAnglesRad[1] = vecStr.substring(delim2+1, delim3).toFloat();

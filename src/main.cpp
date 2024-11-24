@@ -5,18 +5,18 @@
 #include <motors.h>
 #include <serial.h>
 
-#define MIN_MOTOR_ANGLE_RAD (-90*DEG_TO_RAD)
-#define MAX_MOTOR_ANGLE_RAD (90*DEG_TO_RAD)
+#define MIN_MOTOR_ANGLE_RAD (-60*DEG_TO_RAD)
+#define MAX_MOTOR_ANGLE_RAD (70*DEG_TO_RAD)
 
-#define MAX_SPEED_RAD (1*REV_TO_RAD)
-#define MAX_ACCEL_RAD (3*REV_TO_RAD)
+#define MAX_SPEED_RAD (2*REV_TO_RAD)
+#define MAX_ACCEL_RAD (10*REV_TO_RAD)
 
 #define SERIAL_BAUD_RATE (115200)
 
 /* When performing relative moves, we scale down speed and acceleration for safety */
 #define RELATIVE_MOVE_FACTOR (0.25)
 
-bool TARED = false;
+bool HOMED = false;
 
 void setup() {
     /* Setup serial */
@@ -40,19 +40,25 @@ void loop() {
         }
         /* Go through all three possible commands: tare, absolute move, and relative move */
         switch(rPi.getCommand()){
-            /* If we received a TARE command, set the current position of the motors to the desired value */
-            case InputMessenger::TARE:{
-               for (int i=0; i<NUM_MOTORS; i++){
-                    Motors[i]->setCurrentPosition(motorSteps[i]);
+            /* If we received a HOME command, cut power to the motors and tare */
+            case InputMessenger::HOME:{
+                /* Cut motor power */
+                disableXYE();
+                /* Set motor position to minimum */
+                for (int i=0; i<NUM_MOTORS; i++){
+                    Motors[i]->setCurrentPosition(radToStep(MIN_MOTOR_ANGLE_RAD));
                 }
-                /* Let the Pi know that we have successfully tared */
-                TARED = true;
-                Serial.println("TARE"); 
+                /* Wait a second before re-enabling motors */
+                delay(1000);
+                enableXYE();
+                /* Let the Pi know that we have successfully homed */
+                HOMED = true;
+                Serial.println("HOME"); 
                 break;
             }
             case InputMessenger::ABSOLUTE_MOVE:{
-                if (!TARED){
-                    Serial.println("Absolute move failed: Motor is not tared");
+                if (!HOMED){
+                    Serial.println("Absolute move failed: Motor is not homed");
                     break;
                 }
                 for (int i=0; i<NUM_MOTORS; i++){
@@ -60,6 +66,7 @@ void loop() {
                     long minMotorAngleSteps = radToStep(MIN_MOTOR_ANGLE_RAD);
                     long maxMotorAngleSteps = radToStep(MAX_MOTOR_ANGLE_RAD);
                     long motorStepConstrained = constrain(motorSteps[i], minMotorAngleSteps, maxMotorAngleSteps);
+                    /* Update the new target position */
                     Motors[i]->moveTo(motorStepConstrained);
                 }
                 /* Scale speed and acceleration such that all motors arrive at the same time */
@@ -68,6 +75,7 @@ void loop() {
             }
             case InputMessenger::RELATIVE_MOVE:{
                 for (int i=0; i<NUM_MOTORS; i++){
+                    /* Update the new target position */
                     Motors[i]->move(motorSteps[i]);
                 }
                 /* Scale speed and acceleration such that all motors arrive at the same time */
@@ -78,7 +86,6 @@ void loop() {
     }
     /* Run all motors */
     for (int i=0; i<NUM_MOTORS; i++){
-        Motors[i]->run();
+            Motors[i]->run();
     }
 }
-

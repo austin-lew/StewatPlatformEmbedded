@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <motors.h>
 
+#define sgn(x) ((x) < 0 ? -1 : ((x) > 0 ? 1 : 0))
+
 AccelStepper* Motors[NUM_MOTORS];
 AccelStepper Motor1, Motor2, Motor3;
 
@@ -33,8 +35,14 @@ void setupMotors(float maxSpeedRad, float maxAccelRad){
 
 void enableXYE(){
     /* Enable X, Y, and E motors */
-    pinMode(XYE_ENABLE, OUTPUT);
-    digitalWrite(XYE_ENABLE, LOW);
+    pinMode(XYE_ENABLE_inv, OUTPUT);
+    digitalWrite(XYE_ENABLE_inv, LOW);
+}
+
+void disableXYE(){
+    /* Disable X, Y, and E motors */
+    pinMode(XYE_ENABLE_inv, OUTPUT);
+    digitalWrite(XYE_ENABLE_inv, HIGH);
 }
 
 long radToStep(float rad){
@@ -52,8 +60,7 @@ void scaleSpeedAndAccel(AccelStepper** Motors, float maxSpeedRad, float maxAccel
     /* If there is no movement, do nothing */
     if (longestDistance == 0)
         return;
-    /* Make motor speed proportional to distance */
-    /* Make motor acceleration proportional to distance */
+    /* Make motor speed and acceleration proportional to distance */
     float maxSpeedSteps = radToStep(maxSpeedRad);
     float maxAccelSteps = radToStep(maxAccelRad);
     for (int i=0; i<NUM_MOTORS; i++){

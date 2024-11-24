@@ -15,7 +15,7 @@
 #define E_DIR PIN_B0
 
 /* Enable pin for X, Y, and E */
-#define XYE_ENABLE PIN_D6
+#define XYE_ENABLE_inv PIN_D6
 
 /* All three motor drivers are set to 1/16th microstepping */
 #define MICROSTEP (16)
@@ -40,6 +40,7 @@ extern AccelStepper* Motors[NUM_MOTORS];
 /* Function declarations */
 void setupMotors(float maxSpeedRad, float maxAccelRad);
 void enableXYE();
+void disableXYE();
 long radToStep(float rad);
 void scaleSpeedAndAccel(AccelStepper** Motors, float maxSpeedRad, float maxAccelRad);
 
